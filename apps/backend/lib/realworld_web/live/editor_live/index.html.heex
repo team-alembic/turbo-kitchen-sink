@@ -1,0 +1,71 @@
+<div class="editor-page">
+  <div class="container page">
+    <div class="row">
+      <div class="col-md-10 offset-md-1 col-xs-12">
+        <%= if @form.source.submit_errors do %>
+          <div class="alert alert-danger">
+            <h4 class="alert-heading">Oops!</h4>
+            <p>Something went wrong. Please check the form and try again.</p>
+            <ul class="error-messages">
+              <%= for {field, {message, _}} <- @form.source.submit_errors do %>
+                <li><%= "#{field} #{message}" %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <.simple_form for={@form} phx-change="validate" phx-submit="save">
+          <%= hidden_inputs_for(@form) %>
+          <fieldset>
+            <fieldset class="form-group">
+              <%= text_input(@form, :title,
+                class: "form-control form-control-lg",
+                placeholder: "Article Title"
+              ) %>
+              <%= error_tag(@form, :title) %>
+            </fieldset>
+            <fieldset class="form-group">
+              <%= text_input(@form, :description,
+                class: "form-control",
+                placeholder: "What's this article about?"
+              ) %>
+              <%= error_tag(@form, :description) %>
+            </fieldset>
+            <fieldset class="form-group">
+              <%= textarea(@form, :body_raw,
+                class: "form-control",
+                rows: 8,
+                placeholder: "Write your article (in markdown)"
+              ) %>
+              <%= error_tag(@form, :body_raw) %>
+            </fieldset>
+            <fieldset class="form-group">
+              <input
+                id="tag-input"
+                type="text"
+                class="form-control"
+                placeholder="Enter tags"
+                phx-update="ignore"
+                phx-hook="TagInput"
+              />
+              <div class="tag-list">
+                <.inputs_for :let={tag_form} field={@form[:tags]}>
+                  <%= hidden_input(tag_form, :name) %>
+                  <span class="tag-default tag-pill">
+                    <i
+                      class="ion-close-round"
+                      phx-click="remove_tag"
+                      phx-value-path={tag_form.name}
+                    >
+                    </i>
+                    <%= " #{AshPhoenix.Form.value(tag_form, :name)} " %>
+                  </span>
+                </.inputs_for>
+              </div>
+            </fieldset>
+            <%= submit("Publish Article", class: "btn btn-lg pull-xs-right btn-primary") %>
+          </fieldset>
+        </.simple_form>
+      </div>
+    </div>
+  </div>
+</div>

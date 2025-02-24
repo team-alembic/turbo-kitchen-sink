@@ -1,0 +1,8 @@
+{
+  "name": "@repo/backend",
+  "private": true,
+  "scripts": {
+    "build": "mix compile",
+    "dev": "mix phx.server"
+  }
+}
